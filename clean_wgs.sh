@@ -41,12 +41,12 @@ fi
 #loop over file pairs and process
 for ((a=0; a<${#file1[@]}; a++))
 	do
-		echo "cleaning file pair ${file1[a]} and ${file2[a]}"
+		echo -e "\n\ncleaning file pair ${file1[a]} and ${file2[a]}"
 
 		#determine output prefix
 		tempid=`basename ${file1[a]}`
 		fileid=${tempid%_R1*}
-		echo -e "\n\n$fileid"
+		echo "$fileid"
 
 
 		#adapter trim with Trimmomatic
