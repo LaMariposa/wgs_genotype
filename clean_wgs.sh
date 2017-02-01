@@ -3,7 +3,7 @@
 #clean_reads.sh
 #script to clean raw illumina paired end reads
 #M. Supple
-#last modified 30 January 2016
+#last modified 31 January 2016
 
 #usage clean_reads.sh </path/in/dir>
 
@@ -62,17 +62,17 @@ for ((a=0; a<${#file1[@]}; a++))
 		#quality filter and remove small reads with Trimmomatic
 		#remaining pairs from flash
 		java -jar /soe/megan/bin/trimmomatic.jar PE -threads 4 $outdir/out.notCombined_1.fastq.gz $outdir/out.notCombined_2.fastq.gz \
--phred33			-baseout $outdir/trimmo2p.fastq.gz LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:36
+			-baseout $outdir/trimmo2p.fastq.gz LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:36
 		rm $outdir/out.notCombined_1.fastq.gz $outdir/out.notCombined_2.fastq.gz
 		#merged from flash
 		java -jar /soe/megan/bin/trimmomatic.jar SE -threads 4 $outdir/out.extendedFrags.fastq.gz $outdir/trimmo2u1.fastq.gz \
--phred33			LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:36
+			LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:36
 		rm $outdir/out.extendedFrags.fastq.gz
 		#orphans from trimmomatic
 		java -jar /soe/megan/bin/trimmomatic.jar SE -threads 4 $outdir/trimmo_1U.fastq.gz $outdir/trimmo2u2.fastq.gz \
--phred33			LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:36
+			LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:36
 		java -jar /soe/megan/bin/trimmomatic.jar SE -threads 4 $outdir/trimmo_2U.fastq.gz $outdir/trimmo2u3.fastq.gz \
--phred33			LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:36
+			LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:36
 		rm $outdir/trimmo_1U.fastq.gz $outdir/trimmo_2U.fastq.gz
 
 		#rename files and merge orphans
