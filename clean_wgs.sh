@@ -83,7 +83,7 @@ for ((a=0; a<${#file1[@]}; a++))
 
 	done
 
-
+echo -e "\nDONE!!!"
 
 
 
