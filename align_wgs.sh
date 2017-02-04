@@ -13,7 +13,7 @@
 	#picard
 
 #input: fastq files (3 for each unit). assumes end in clean.fastq.gz, and _R1_ and _R2_ indicate pairs, _S_ indicates orphans
-#output: bam file and index for each unit
+#output: bam file and index for each library
 
 #get input information
 indir=$1
@@ -53,13 +53,16 @@ for ((a=0; a<${#file1[@]}; a++))
 
 		#align with bwa mem
 		#pairs
-		bwa mem -t 6 -PM -R '@RG\tID:test\tSM:test'
+		bwa mem -t 6 -PM -R '@RG\tID:$fileid\tSM:test'
 		#orphans
 
 		#mark duplicates with picard
-		
+	
+		#merge bams from each library and mark duplicates
+
+		#indel realign
+	
 		#base recalibration
-		#realign around indels?
 
 		#index
 
