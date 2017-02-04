@@ -76,9 +76,9 @@ for ((a=0; a<${#file1[@]}; a++))
 		rm $outdir/trimmo_1U.fastq.gz $outdir/trimmo_2U.fastq.gz
 
 		#rename files and merge orphans
-		mv $outdir/trimmo2p_1P.fastq.gz $outdir/$fileid\_R1.fastq.gz
-                mv $outdir/trimmo2p_2P.fastq.gz $outdir/$fileid\_R2.fastq.gz 		
-		cat $outdir/trimmo2p_1U.fastq.gz $outdir/trimmo2p_2U.fastq.gz $outdir/trimmo2u1.fastq.gz $outdir/trimmo2u2.fastq.gz $outdir/trimmo2u3.fastq.gz > $outdir/$fileid\_S.fastq.gz
+		mv $outdir/trimmo2p_1P.fastq.gz $outdir/$fileid\_R1_clean.fastq.gz
+                mv $outdir/trimmo2p_2P.fastq.gz $outdir/$fileid\_R2_clean.fastq.gz 		
+		cat $outdir/trimmo2p_1U.fastq.gz $outdir/trimmo2p_2U.fastq.gz $outdir/trimmo2u1.fastq.gz $outdir/trimmo2u2.fastq.gz $outdir/trimmo2u3.fastq.gz > $outdir/$fileid\_S_clean.fastq.gz
 		rm $outdir/trimmo2p_1U.fastq.gz $outdir/trimmo2p_2U.fastq.gz $outdir/trimmo2u1.fastq.gz $outdir/trimmo2u2.fastq.gz $outdir/trimmo2u3.fastq.gz $outdir/out.histogram $outdir/out.hist
 
 	done
