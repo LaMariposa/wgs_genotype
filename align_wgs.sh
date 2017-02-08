@@ -16,6 +16,7 @@
 #output: bam file and index for each library
 
 picard=/soe/megan/bin/picard.jar
+gatk=/soe/megan/bin/GenomeAnalysisTK.jar 
 
 #get input information
 genome=$1
@@ -95,6 +96,9 @@ for ((b=0; b<${#uniq_libsids[@]}; b++))
 	
 		#index
 		samtools index $outdir/${uniq_libsids[b]}_markdup.bam
+
+		#call library variants
+		java -jar $gatk -T HaplotypeCaller -R $genome -I $outdir/$fileid.bam --emitRefConfidence GVCF -o $outdir/$fileid.g.vcf
 
 	done
 
