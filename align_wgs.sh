@@ -15,6 +15,7 @@
 #input: fastq files (3 for each unit). assumes end in clean.fastq.gz, and _R1_ and _R2_ indicate pairs, _S_ indicates orphans
 #output: bam file and index for each library
 
+threads=6
 picard=/soe/megan/bin/picard.jar
 gatk=/soe/megan/bin/GenomeAnalysisTK.jar 
 
@@ -62,17 +63,17 @@ for ((a=0; a<${#file1[@]}; a++))
 
 		#align with bwa mem
 		#pairs
-		bwa mem -t 6 -PM -R "@RG\tID:$fileid\tLB:$libid\tSM:$libid\tPL:ILLUMINA" $genome \
+		bwa mem -t $threads -PM -R "@RG\tID:$fileid\tLB:$libid\tSM:$libid\tPL:ILLUMINA" $genome \
 			${file1[a]} ${file2[a]} > $outdir/temp_p.sam
 		#orphans
-		bwa mem -t 6 -M -R "@RG\tID:$fileid\tLB:$libid\tSM:$libid\tPL:ILLUMINA" $genome \
+		bwa mem -t $threads -M -R "@RG\tID:$fileid\tLB:$libid\tSM:$libid\tPL:ILLUMINA" $genome \
                         ${file3[a]} > $outdir/temp_u.sam
 
 		#generate bams and merge pairs and orphans and sort
-		samtools view -b -o $outdir/temp_p.bam $outdir/temp_p.sam
-		samtools view -b -o $outdir/temp_u.bam $outdir/temp_u.sam
+		samtools view -@ $threads -b -o $outdir/temp_p.bam $outdir/temp_p.sam
+		samtools view -@ $threads -b -o $outdir/temp_u.bam $outdir/temp_u.sam
 		samtools merge -c $outdir/temp.bam $outdir/temp_p.bam $outdir/temp_u.bam
-		samtools sort -o $outdir/$fileid.bam -T tmpsort $outdir/temp.bam
+		samtools sort -@ $threads -o $outdir/$fileid.bam -T tmpsort $outdir/temp.bam
 
 		#clean
 		rm $outdir/temp_p.sam $outdir/temp_u.sam $outdir/temp_p.bam $outdir/temp_u.bam $outdir/temp.bam
@@ -98,7 +99,7 @@ for ((b=0; b<${#uniq_libsids[@]}; b++))
 		samtools index $outdir/${uniq_libsids[b]}_markdup.bam
 
 		#call library variants
-		java -jar $gatk -T HaplotypeCaller -R $genome -I $outdir/$fileid.bam --emitRefConfidence GVCF -o $outdir/$fileid.g.vcf
+		java -jar $gatk -T HaplotypeCaller -nct $threads -R $genome -I $outdir/$fileid.bam --emitRefConfidence GVCF -o $outdir/$fileid.g.vcf
 
 	done
 
