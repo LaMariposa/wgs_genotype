@@ -99,7 +99,7 @@ for ((b=0; b<${#uniq_libsids[@]}; b++))
 		samtools index $outdir/${uniq_libsids[b]}_markdup.bam
 
 		#call library variants
-		java -jar $gatk -T HaplotypeCaller -nct $threads -R $genome -I $outdir/$fileid.bam --emitRefConfidence GVCF -o $outdir/$fileid.g.vcf
+		java -jar $gatk -T HaplotypeCaller -R $genome -I $outdir/$fileid.bam --emitRefConfidence GVCF -o $outdir/$fileid.g.vcf
 
 	done
 
