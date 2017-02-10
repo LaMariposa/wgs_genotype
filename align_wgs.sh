@@ -18,6 +18,7 @@
 threads=6
 picard=/soe/megan/bin/picard.jar
 gatk=/soe/megan/bin/GenomeAnalysisTK.jar 
+samtools=/soe/megan/bin/samtools
 
 #get input information
 genome=$1
@@ -70,10 +71,10 @@ for ((a=0; a<${#file1[@]}; a++))
                         ${file3[a]} > $outdir/temp_u.sam
 
 		#generate bams and merge pairs and orphans and sort
-		samtools view -@ $threads -b -o $outdir/temp_p.bam $outdir/temp_p.sam
-		samtools view -@ $threads -b -o $outdir/temp_u.bam $outdir/temp_u.sam
-		samtools merge -c $outdir/temp.bam $outdir/temp_p.bam $outdir/temp_u.bam
-		samtools sort -@ $threads -o $outdir/$fileid.bam -T tmpsort $outdir/temp.bam
+		$samtools view -@ $threads -b -o $outdir/temp_p.bam $outdir/temp_p.sam
+		$samtools view -@ $threads -b -o $outdir/temp_u.bam $outdir/temp_u.sam
+		$samtools merge -c $outdir/temp.bam $outdir/temp_p.bam $outdir/temp_u.bam
+		$samtools sort -@ $threads -o $outdir/$fileid.bam -T tmpsort $outdir/temp.bam
 
 		#clean
 		rm $outdir/temp_p.sam $outdir/temp_u.sam $outdir/temp_p.bam $outdir/temp_u.bam $outdir/temp.bam
@@ -96,10 +97,10 @@ for ((b=0; b<${#uniq_libsids[@]}; b++))
 		java -jar $picard MarkDuplicates M=$outdir/${uniq_libsids[b]}.metrics I=$libbams O=$outdir/${uniq_libsids[b]}_markdup.bam
 	
 		#index
-		samtools index $outdir/${uniq_libsids[b]}_markdup.bam
+		$samtools index $outdir/${uniq_libsids[b]}_markdup.bam
 
 		#call library variants
-		java -jar $gatk -T HaplotypeCaller -R $genome -I $outdir/$fileid.bam --emitRefConfidence GVCF -o $outdir/$fileid.g.vcf
+		java -jar $gatk -T HaplotypeCaller -R $genome -I $outdir/${uniq_libsids[b]}_markdup.bam --emitRefConfidence GVCF -o $outdir/${uniq_libsids[b]}.g.vcf
 
 	done
 
