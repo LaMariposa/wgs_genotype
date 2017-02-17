@@ -94,7 +94,7 @@ for ((b=0; b<${#uniq_libsids[@]}; b++))
 		#get a list of all the bams for the library
 		libbams=`echo $outdir/${uniq_libsids[b]}*.bam | sed 's/ / I=/g'`
 		echo "using bam files $libbams"
-		java -jar $picard MarkDuplicates M=$outdir/${uniq_libsids[b]}.metrics MAX_FILE_HANDLES_FOR_READ_ENDS_MAP=1000 \ 
+		java -jar $picard MarkDuplicates M=$outdir/${uniq_libsids[b]}.metrics MAX_FILE_HANDLES_FOR_READ_ENDS_MAP=1000 \
 			I=$libbams O=$outdir/${uniq_libsids[b]}_markdup.bam
 	
 		#index
