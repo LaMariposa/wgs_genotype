@@ -51,7 +51,7 @@ fi
 #loop over file triples and process
 for ((a=0; a<${#file1[@]}; a++))
 	do
-		echo -e "\n\ncleaning file triple ${file1[a]} and ${file2[a]} and ${file3[a]}"
+		echo -e "\n\naligning file triple ${file1[a]} and ${file2[a]} and ${file3[a]}"
 
 		#determine output prefix
 		tempid=`basename ${file1[a]}`
