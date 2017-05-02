@@ -35,7 +35,7 @@ if [ ! -d "$outdir" ]; then
 fi
 
 
-#loop over file triples and process
+#loop over files and process
 for ((a=0; a<${#seqid[@]}; a++))
 	do
 
