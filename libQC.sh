@@ -3,7 +3,7 @@
 #libQC.sh
 #script to QC MiSeq sequenced libraries
 #M. Supple
-#last modified 1 Nov 2017
+#last modified 9 Nov 2017
 
 #usage align_reads.sh </path/genome/genome.fasta> </path/in/dir>
 
@@ -11,10 +11,12 @@
 	#fastqc
 	#bwa
 
-#input: paired fastq files (assumes *_R1.fastq and *_R2.fastq)
+#input: paired fastq files (assumes *_R1_001.fastq.gz and *_R2_001.fastq.gz)
 #output:
 	#fastqc report 
-	#sam file and fragment lengths
+	#sam file and fragment length distribution
+	#prinseq output
+	#flagstat
 
 threads=6
 
@@ -23,16 +25,16 @@ genome=$1
 indir=$2
 
 #get file list
-file1=($(ls $indir/*_R1_001.fastq))
-file2=($(ls $indir/*_R2_001.fastq))
+file1=($(ls $indir/*_R1_001.fastq.gz))
+file2=($(ls $indir/*_R2_001.fastq.gz))
 
 #array of library names
 libsids=()
 
-#check if have equal numbers of read1 and read2 and read3
+#check if have equal numbers of read1 and read2
 if [ ${#file1[@]} = ${#file2[@]} ] 
 	then
-		echo -e "processing ${#file1[@]} file triples\naligning to genome $genome"
+		echo -e "processing ${#file1[@]} file pairs\naligning to genome $genome"
 else 
 	echo "Failed!  Number of R1 and R2 files differ"; exit 1
 fi
