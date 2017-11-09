@@ -28,6 +28,9 @@ indir=$2
 file1=($(ls $indir/*_R1_clean.fastq.gz))
 file2=($(ls $indir/*_R2_clean.fastq.gz))
 file3=($(ls $indir/*_S_clean.fastq.gz))
+#file1=($(ls $indir/*.R1.fq.gz))
+#file2=($(ls $indir/*.R2.fq.gz))
+#file3=($(ls $indir/*.M.fq.gz))
 
 #array of library names
 libsids=()
@@ -101,7 +104,7 @@ for ((b=0; b<${#uniq_libsids[@]}; b++))
 		$samtools index $outdir/${uniq_libsids[b]}_markdup.bam
 
 		#call library variants
-		java -jar $gatk -T HaplotypeCaller -R $genome -I $outdir/${uniq_libsids[b]}_markdup.bam --emitRefConfidence GVCF -o $outdir/${uniq_libsids[b]}.g.vcf
+#		java -jar $gatk -T HaplotypeCaller -R $genome -I $outdir/${uniq_libsids[b]}_markdup.bam --emitRefConfidence GVCF -o $outdir/${uniq_libsids[b]}.g.vcf
 
 	done
 
