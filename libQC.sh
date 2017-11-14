@@ -10,8 +10,11 @@
 #requires
 	#fastqc
 	#bwa
+	#samtools 
+	#prinseq
 
 #input: paired fastq files (assumes *_R1_001.fastq.gz and *_R2_001.fastq.gz)
+
 #output:
 	#fastqc report 
 	#sam file and fragment length distribution
@@ -61,6 +64,10 @@ if [ ! -d "$psdir" ]; then
   mkdir $psdir
 fi
 
+tempdir=temp
+if [ ! -d "$tempdir" ]; then
+  mkdir $tempdir
+fi
 
 #loop over file pairs and process
 for ((a=0; a<${#file1[@]}; a++))
@@ -68,8 +75,8 @@ for ((a=0; a<${#file1[@]}; a++))
 		echo -e "\n\nQCing file pair ${file1[a]} and ${file2[a]}"
 
 		#fastqc
-		fastqc -o $fqcdir ${file1[a]}
-		fastqc -o $fqcdir ${file2[a]}	
+		fastqc -dir $tempdir -o $fqcdir ${file1[a]}
+		fastqc -dir $tempdir -o $fqcdir ${file2[a]}	
 
 		#determine output prefix
 		tempid=`basename ${file1[a]}`
@@ -78,17 +85,17 @@ for ((a=0; a<${#file1[@]}; a++))
 
 		#align with bwa mem
 		bwa mem -t $threads -PM $genome ${file1[a]} ${file2[a]} > $aligndir/$fileid.sam
-		echo "\n\n\nstats for $fileid" >> flagstat.out
+		echo -e "\n\n\nstats for $fileid" >> flagstat.out
 		samtools flagstat $aligndir/$fileid.sam >> flagstat.out
 		
 		#get frag length distribution
 		cut -f9 -d$'\t' $aligndir/$fileid.sam > $tlendir/$fileid.tlen.txt
 
 		#prinseq
-		perl /projects/redser3-notbackedup/projects/pheintzman/Scripts/prinseq-lite.pl -fastq ${file1[a]} -graph_data $psdir/$fileid.R1.gd \
+		zcat ${file1[a]} | perl /projects/redser3-notbackedup/projects/pheintzman/Scripts/prinseq-lite.pl -fastq stdin -graph_data $psdir/$fileid.R1.gd \
 			-graph_stats ld,gc,qd,ns,pt,ts,aq,de,da,sc -out_good null -out_bad null
-		perl /projects/redser3-notbackedup/projects/pheintzman/Scripts/prinseq-lite.pl -fastq ${file2[a]} -graph_data $psdir/$fileid.R2.gd \
-			-graph_stats ld,gc,qd,ns,pt,ts,aq,de,da,sc -out_good null -out_bad null
+		zcat ${file2[a]} | perl /projects/redser3-notbackedup/projects/pheintzman/Scripts/prinseq-lite.pl -fastq stdin -graph_data $psdir/$fileid.R2.gd \
+                        -graph_stats ld,gc,qd,ns,pt,ts,aq,de,da,sc -out_good null -out_bad null
 		perl /projects/redser3-notbackedup/projects/pheintzman/Scripts/prinseq-graphs.pl -i $psdir/$fileid.R1.gd -o $psdir/$fileid.R1.graph_data -png_all -html_all 
 		perl /projects/redser3-notbackedup/projects/pheintzman/Scripts/prinseq-graphs.pl -i $psdir/$fileid.R2.gd -o $psdir/$fileid.R2.graph_data -png_all -html_all
 	done
