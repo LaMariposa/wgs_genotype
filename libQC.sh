@@ -123,7 +123,7 @@ grep 'read group=\|Input Read Pairs:' qc.out > cleaning.stats
 grep 'read group=\|Percent combined:' qc.out >> cleaning.stats
 
 #more cleaning
-rm -I fastqc/*zip
+\rm fastqc/*zip
 rmdir temp
 
 echo -e "\n\nDONE!!!"
